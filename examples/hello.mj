@@ -1,0 +1,8 @@
+// hello.mj
+
+int age = 21;
+int marks = 85;
+
+print(age);
+print(marks);
+print(10 + 20 * 3);
