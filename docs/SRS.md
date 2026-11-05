@@ -37,6 +37,7 @@ The main goal is **learning how compilers work inside**. The second goal is a st
 | **Lexer (Lexical Analyzer)** | Reads text and cuts it into small pieces called tokens, like cutting a sentence into words |
 | **Token** | One small meaningful piece, like `int`, `age`, `=`, or `21` |
 | **Parser** | Checks that tokens are in a correct order (grammar), like checking a sentence is grammatically correct |
+| **Recursive-descent parsing** | is a technique where parser starts from top level of grammer rules and keep following grammer rules until reaches the individual token recursively.|
 | **AST (Abstract Syntax Tree)** | A tree that shows the structure of the program |
 | **Semantic Analysis** | Checks that the program makes sense (for example, a variable is declared before use) |
 | **Symbol Table** | A notebook that remembers every variable name and its type |
