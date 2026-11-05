@@ -3,6 +3,9 @@ package com.deepu.minijava;
 import com.deepu.minijava.diagnostics.CompileException;
 import com.deepu.minijava.lexer.Lexer;
 import com.deepu.minijava.lexer.Token;
+import com.deepu.minijava.parser.Parser;
+import com.deepu.minijava.parser.ast.AstPrinter;
+import com.deepu.minijava.parser.ast.Program;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -11,7 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-/** Entry point: Source File -> Lexer -> (more stages are added in later sprints) */
+/** Entry point: Source File -> Lexer -> Parser -> (more stages are added in later sprints) */
 public class Main {
 
     private static final int EXIT_OK = 0;
@@ -25,11 +28,14 @@ public class Main {
     /** Does all the work and returns the exit code. Kept separate from main() so tests can call it. */
     static int run(String[] args, PrintStream out, PrintStream err) {
         boolean showTokens = false;
+        boolean showAst = false;
         String fileName = null;
 
         for (String arg : args) {
             if (arg.equals("--tokens")) {
                 showTokens = true;
+            } else if (arg.equals("--ast")) {
+                showAst = true;
             } else if (arg.startsWith("--")) {
                 err.println("Unknown option: " + arg);
                 return usage(err);
@@ -67,10 +73,17 @@ public class Main {
                 return EXIT_OK;
             }
 
-            // SPRINT 2: the Parser is added here.
+            Program program = new Parser(tokens).parse();
+
+            if (showAst) {                          // this option stays for the whole project
+                out.println(AstPrinter.print(program));
+                return EXIT_OK;
+            }
+
             // SPRINT 3: the SemanticAnalyzer and CodeGenerator are added here.
             // SPRINT 4: MiniVM is added here (and its VmException is caught below).
-            out.println("Lexing finished: " + tokens.size() + " tokens. (The parser is not built yet.)");
+            out.println("Parsing finished: " + program.statements().size()
+                    + " statements. (The semantic analyzer is not built yet.)");
             return EXIT_OK;
         } catch (CompileException e) {
             err.println(e.format());
@@ -87,7 +100,7 @@ public class Main {
     }
 
     private static int usage(PrintStream err) {
-        err.println("Usage: java -jar minijava-compiler.jar [--tokens] <file.mj>");
+        err.println("Usage: java -jar minijava-compiler.jar [--tokens] [--ast] <file.mj>");
         return EXIT_USAGE;
     }
 }
